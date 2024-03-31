@@ -14,14 +14,12 @@ body: {
   required: true,
 },
 // Create a "createdAt" property with type Date and set default to Date.now
-createdAT: {
+createdAt: {
   type: Date,
   default: Date.now
 },
 // Create a "comments" property that is an array of CommentSchema (a subdocument)
-comments: {
-  children: [CommentSchema]
-},
+comments: [CommentSchema],
 // Create a "tags" property that is an array of objects
 // with type SchemaTypes.ObjectId and ref 'Tag'
 tags: [{
@@ -32,7 +30,7 @@ tags: [{
 slug: {
   type: String
 }
-})
+});
 
 // Turns the first five words of the title and lowercases them
 // and joins them on hypens.

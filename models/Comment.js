@@ -16,6 +16,6 @@ createdAt: {
     type: Date,
     default: Date.now
   }
-})
+});
 
 module.exports = CommentSchema

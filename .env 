@@ -1,6 +1,0 @@
-# Copy or Rename this file to .env
-# Replace the value below with your actual key
-
-SESSION_SECRET=elodie_secret_UFL
-ADMIN_USERNAME=albertgator
-ADMIN_PASSWORD=twofoursixbitsdollar

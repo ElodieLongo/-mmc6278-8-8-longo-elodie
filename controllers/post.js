@@ -17,7 +17,8 @@ if (!title || !body) {
     });
   // return the new post as json and a 200 status
   return res.status(200).json(newPost);
-  } catch (error) {
+} catch(err) {
+  res.status(500).send(err.message)
 }
 }
 
@@ -28,24 +29,23 @@ async function get(req, res) {
     // TODO: Find a single post
     // find a single post by slug and populate 'tags'
     // you will need to use .lean() or .toObject()
-const post = await Post.findOne({ slug }).populate('tags').lean();
+    const post = await Post.findOne({ slug }).populate('tags').lean();
+    if (!post) {
+      return res.status(400).send('Not found');
+    }
 
     post.createdAt = new Date(post.createdAt).toLocaleString('en-US', {
-      month: '2-digit',
-      day: '2-digit',
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric',
       year: 'numeric',
-    })
-    post.comments.map(comment => {
-      comment.createdAt = new Date(comment.createdAt).toLocaleString('en-US', {
-        month: '2-digit',
-        day: '2-digit',
-        year: 'numeric',
-      })
-      return comment
-    })
-    res.render('view-post', {post, isLoggedIn: req.session.isLoggedIn})
+  });
+
+  const isLoggedIn = req.session.isLoggedIn || false;
+
+res.render('view-post', { post, isLoggedIn });
   } catch(err) {
-    res.status(500).send(err.message)
+    res.status(500).send("Server Error");
   }
 }
 
@@ -94,8 +94,7 @@ async function update(req, res) {
     // if there is no title or body, return a 400 status
     if (!title || !body) {
       return res.status(400).json({ error:'No title or body' });
-    } 
-
+    };
     // omitting tags is OK
     // find and update the post with the title, body, and tags
         const updatedPost = await Post.findByIdAndUpdate(postId, {
@@ -111,13 +110,19 @@ async function update(req, res) {
     };
 
 async function remove(req, res, next) {
-  const postId = req.params.id
-  // TODO: Delete a post
-  // delete post by id, return a 200 status
- const deletedPost = await Post.findByIdAndRemove(postId, {
- });
+  try {
+    const postId = req.params.id;
+    // TODO: Delete a post
+    // delete post by id, return a 200 status
+    const deletedPost = await Post.findByIdAndRemove(postId);
+    if (!deletedPost) {
+      return res.status(400).json({ message: 'Not found;'})
+  }
   res.status(200).json({ message: 'Post deleted'});
-}
+  } catch (error) {
+    res.status(500).send("server error");
+  }
+};
 
   
 
