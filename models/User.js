@@ -12,15 +12,21 @@ username: {
 password: {
   type: String,
   required: true,
-  min: 5,
-  max: 20
+  minlength: 5,
+  maxlength: 20
 }
-})
-
+});
 // hashes the password before it's stored in mongo
 UserSchema.pre('save', async function(next) {
-  this.password = await bcrypt.hash(this.password, 10)
-  next()
-})
+  try {
+    if (!this.isModified('password')) {
+      return next();
+    }
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
+  } catch (error) {
+    return next(error);
+  }
+});
 
 module.exports = models.User || model('User', UserSchema)
