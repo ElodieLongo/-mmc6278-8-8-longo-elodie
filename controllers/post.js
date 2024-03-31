@@ -33,14 +33,14 @@ async function get(req, res) {
     if (!post) {
       return res.status(400).send('Not found');
     }
-
+if (post.createdAt) {
     post.createdAt = new Date(post.createdAt).toLocaleString('en-US', {
       weekday: 'short',
       month: 'short',
       day: 'numeric',
       year: 'numeric',
   });
-
+}
   const isLoggedIn = req.session.isLoggedIn || false;
 
 res.render('view-post', { post, isLoggedIn });
